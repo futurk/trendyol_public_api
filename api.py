@@ -1,3 +1,4 @@
+# api is not currently in use. it's just meant to be a blueprint for possible future endavours.
 from fastapi import FastAPI
 import sqlite3
 
