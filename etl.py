@@ -3,6 +3,7 @@ import hashlib
 import os
 import re
 import sqlite3
+import json
 from PyPDF2 import PdfReader
 
 def get_remote_file_hash(url):
@@ -38,7 +39,7 @@ def parse_file(local_filename):
         grouped_matches[i].insert(0, i)
     return grouped_matches
 
-def save_to_database(shipping_costs):
+def save(shipping_costs):
     # array to db
     conn = sqlite3.connect('shipping_costs.db')
     cursor = conn.cursor()
@@ -63,17 +64,17 @@ def save_to_database(shipping_costs):
     conn.commit()
 
     # db to json
-    # cursor.execute('SELECT * FROM shipping_costs')
-    # rows = cursor.fetchall()
-    # columns = [description[0] for description in cursor.description]
-    # response_data = {}
-    # for idx, row in enumerate(rows):
-    #     row_data = {}
-    #     for col_idx, col_name in enumerate(columns):
-    #         row_data[col_name] = row[col_idx]
-    #     response_data[str(idx)] = row_data    
-    # with open("shipping_costs.json", "w") as outfile:
-    #     json.dump(response_data, outfile)
+    cursor.execute('SELECT * FROM shipping_costs')
+    rows = cursor.fetchall()
+    columns = [description[0] for description in cursor.description]
+    response_data = {}
+    for idx, row in enumerate(rows):
+        row_data = {}
+        for col_idx, col_name in enumerate(columns):
+            row_data[col_name] = row[col_idx]
+        response_data[str(idx)] = row_data    
+    with open("shipping_costs.json", "w") as outfile:
+        json.dump(response_data, outfile)
 
     conn.close()
 
@@ -90,11 +91,11 @@ def main():
         else:
             download_file(url, local_filename)
             shipping_costs = parse_file(local_filename)
-            save_to_database(shipping_costs)
+            save(shipping_costs)
     else:
         download_file(url, local_filename)
         shipping_costs = parse_file(local_filename)
-        save_to_database(shipping_costs)
+        save(shipping_costs)
 
 if __name__ == '__main__':
     main()
