@@ -8,7 +8,7 @@
 
 ## To Do
 
-- [ ] schedule etl.py to run on a weekly basis
+- [x] schedule etl.py to run on a weekly basis
 - [ ] add more objects than just "shipping costs"
 
 ## Resources
