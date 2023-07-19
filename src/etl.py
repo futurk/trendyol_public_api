@@ -41,7 +41,7 @@ def parse_file(local_filename):
 
 def save(shipping_costs):
     # array to db
-    conn = sqlite3.connect('shipping_costs.db')
+    conn = sqlite3.connect('data/shipping_costs.db')
     cursor = conn.cursor()
     cursor.execute("DROP TABLE IF EXISTS shipping_costs")
     cursor.execute('''
@@ -73,14 +73,14 @@ def save(shipping_costs):
         for col_idx, col_name in enumerate(columns):
             row_data[col_name] = row[col_idx]
         response_data[str(idx)] = row_data    
-    with open("shipping_costs.json", "w") as outfile:
+    with open("data/shipping_costs.json", "w") as outfile:
         json.dump(response_data, outfile)
 
     conn.close()
 
 def main():
     url = 'https://tymp.mncdn.com/prod/documents/engagement/kargo/guncel_kargo_fiyatlari.pdf'
-    local_filename = 'guncel_kargo_fiyatlari.pdf'
+    local_filename = 'data/guncel_kargo_fiyatlari.pdf'
 
     remote_file_hash = get_remote_file_hash(url)
 

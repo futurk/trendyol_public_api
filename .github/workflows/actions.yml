@@ -26,7 +26,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run ETL script
-        run: python etl.py
+        run: python src/etl.py
 
       - name: Configure Git
         run: |
