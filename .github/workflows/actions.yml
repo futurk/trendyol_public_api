@@ -36,7 +36,7 @@ jobs:
       - name: Commit changes
         run: |
           git add -A
-          git commit -m "Update data $(date -u +'%Y-%m-%d %H:%M:%S')"
+          git commit -m "Update data $(date -u +'%Y-%m-%d %H:%M:%S')" || true
           git status
 
       - name: Push changes
