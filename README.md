@@ -4,16 +4,17 @@
 
 ### Shipping Costs (shipping_costs.json)
 
-- <https://frknltrk.github.io/trendyol_public_api/shipping_costs.json>
+- <https://frknltrk.github.io/trendyol_public_api/data/shipping_costs.json>
 
 ## To Do
 
-- [x] schedule etl.py to run on a weekly basis
+- [x] schedule _etl.py_ to run on a weekly basis
 - [ ] add more objects than just "shipping costs"
 
 ## Resources
 
 - <https://tymp.mncdn.com/prod/documents/engagement/kargo/guncel_kargo_fiyatlari.pdf>
+- <https://akademi.trendyol.com/satici-bilgi-merkezi/detay/109> (barem: will be implemented)
 
 ## Thanks
 
