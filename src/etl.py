@@ -5,7 +5,8 @@ import re
 import sqlite3
 import json
 from PyPDF2 import PdfReader
-from dateutil.parser import gettz, parse as parsedate
+from dateutil.parser import parse as parsedate
+from dateutil.parser import gettz
 
 def get_remote_file_data(url):
     response = requests.get(url)
