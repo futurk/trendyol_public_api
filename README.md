@@ -14,6 +14,7 @@
 ## Resources
 
 - <https://tymp.mncdn.com/prod/documents/engagement/kargo/guncel_kargo_fiyatlari.pdf>
+- <https://tymp.mncdn.com/prod/documents/engagement/yasal_surecler/komisyon_vade_tablosu.pdf> (fees: will be implemented)
 - <https://akademi.trendyol.com/satici-bilgi-merkezi/detay/109> (barem: will be implemented)
 
 ## Thanks

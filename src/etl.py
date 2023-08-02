@@ -5,13 +5,15 @@ import re
 import sqlite3
 import json
 from PyPDF2 import PdfReader
+from dateutil.parser import gettz, parse as parsedate
 
-def get_remote_file_hash(url):
+def get_remote_file_data(url):
     response = requests.get(url)
     if response.status_code == 200:
+        date = response.headers.get('Last-Modified')
         content = response.content
         content_hash = hashlib.sha256(content).hexdigest()
-        return content_hash
+        return content_hash, date
     else:
         return None
 
@@ -39,7 +41,7 @@ def parse_file(local_filename):
         grouped_matches[i].insert(0, i)
     return grouped_matches
 
-def save(shipping_costs):
+def save(shipping_costs, file_date):
     # array to db
     conn = sqlite3.connect('data/shipping_costs.db')
     cursor = conn.cursor()
@@ -72,7 +74,8 @@ def save(shipping_costs):
         row_data = {}
         for col_idx, col_name in enumerate(columns):
             row_data[col_name] = row[col_idx]
-        response_data[str(idx)] = row_data    
+        response_data[str(idx)] = row_data
+    response_data['last_updated'] = file_date
     with open("data/shipping_costs.json", "w") as outfile:
         json.dump(response_data, outfile)
 
@@ -82,7 +85,9 @@ def main():
     url = 'https://tymp.mncdn.com/prod/documents/engagement/kargo/guncel_kargo_fiyatlari.pdf'
     local_filename = 'data/guncel_kargo_fiyatlari.pdf'
 
-    remote_file_hash = get_remote_file_hash(url)
+    remote_file_hash, remote_file_date = get_remote_file_data(url)
+    # convert the format from "Tue, 01 Aug 2023 06:48:39 GMT" to "YYYY-MM-DD 09:48:39 +0300"
+    remote_file_date = parsedate(remote_file_date).astimezone(gettz('Asia/Istanbul')).strftime("%Y-%m-%d %H:%M:%S %z")
 
     if os.path.exists(local_filename):
         local_file_hash = hashlib.sha256(open(local_filename, 'rb').read()).hexdigest()
@@ -91,11 +96,11 @@ def main():
         else:
             download_file(url, local_filename)
             shipping_costs = parse_file(local_filename)
-            save(shipping_costs)
+            save(shipping_costs, remote_file_date)
     else:
         download_file(url, local_filename)
         shipping_costs = parse_file(local_filename)
-        save(shipping_costs)
+        save(shipping_costs, remote_file_date)
 
 if __name__ == '__main__':
     main()
