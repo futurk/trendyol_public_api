@@ -4,7 +4,7 @@ import os
 import re
 import sqlite3
 import json
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from dateutil.parser import parse as parsedate
 from dateutil.tz import gettz
 
