@@ -10,6 +10,7 @@
 
 - [x] schedule _etl.py_ to run on a weekly basis
 - [ ] add more objects than just "shipping costs"
+- <https://pypdf.readthedocs.io/en/latest/user/migration-1-to-2.html>
 
 ## Resources
 
