@@ -76,7 +76,7 @@ def save(shipping_costs, file_date):
         for col_idx, col_name in enumerate(columns):
             row_data[col_name] = row[col_idx]
         response_data[str(idx)] = row_data
-    response_data['last_updated'] = file_date
+    response_data['last_changed'] = file_date
     with open("data/shipping_costs.json", "w") as outfile:
         json.dump(response_data, outfile)
 
