@@ -101,4 +101,6 @@ def main():
     save(shipping_costs, remote_filedate)
 
 if __name__ == '__main__':
+    basepath = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(basepath)
     main()
