@@ -8,7 +8,7 @@ from pypdf import PdfReader
 from dateutil.parser import parse as parsedate
 from dateutil.tz import gettz
 
-def get_remote_file_data(url):
+def get_remote_file_data(url: str):
     response = requests.get(url)
     if response.status_code == 200:
         date = response.headers.get('Last-Modified')
@@ -18,17 +18,17 @@ def get_remote_file_data(url):
     else:
         return None
 
-def download_file(url, local_filename):
+def download_file(url: str, path: str):
     response = requests.get(url)
     if response.status_code == 200:
-        with open(local_filename, 'wb') as file:
+        with open(path, 'wb') as file:
             file.write(response.content)
-        print(f"File downloaded and saved as {local_filename}")
+        print(f"File downloaded and saved in {path}")
     else:
         print(f"Failed to download file from {url}")
 
-def parse_file(local_filename):
-    reader = PdfReader(local_filename)
+def parse_file(filepath: str):
+    reader = PdfReader(filepath)
     text = ""
     for p in reader.pages:
         text += p.extract_text()
@@ -42,7 +42,7 @@ def parse_file(local_filename):
         grouped_matches[i].insert(0, i)
     return grouped_matches
 
-def save(shipping_costs, file_date):
+def save(shipping_costs, filedate):
     # array to db
     conn = sqlite3.connect('data/shipping_costs.db')
     cursor = conn.cursor()
@@ -76,7 +76,7 @@ def save(shipping_costs, file_date):
         for col_idx, col_name in enumerate(columns):
             row_data[col_name] = row[col_idx]
         response_data[str(idx)] = row_data
-    response_data['last_changed'] = file_date
+    response_data['last_changed'] = filedate
     with open("data/shipping_costs.json", "w") as outfile:
         json.dump(response_data, outfile)
 
@@ -84,24 +84,21 @@ def save(shipping_costs, file_date):
 
 def main():
     url = 'https://tymp.mncdn.com/prod/documents/engagement/kargo/guncel_kargo_fiyatlari.pdf'
-    local_filename = 'data/guncel_kargo_fiyatlari.pdf'
+    local_filepath = 'data/guncel_kargo_fiyatlari.pdf'
 
-    remote_file_hash, remote_file_date = get_remote_file_data(url)
+    remote_filehash, remote_filedate = get_remote_file_data(url)
     # convert the format from "Tue, 01 Aug 2023 06:48:39 GMT" to "YYYY-MM-DD 09:48:39 +0300"
-    remote_file_date = parsedate(remote_file_date).astimezone(gettz('Asia/Istanbul')).strftime("%Y-%m-%d %H:%M:%S %z")
+    remote_filedate = parsedate(remote_filedate).astimezone(gettz('Asia/Istanbul')).strftime("%Y-%m-%d %H:%M:%S %z")
 
-    if os.path.exists(local_filename):
-        local_file_hash = hashlib.sha256(open(local_filename, 'rb').read()).hexdigest()
-        if remote_file_hash and remote_file_hash == local_file_hash:
+    if os.path.exists(local_filepath):
+        local_filehash = hashlib.sha256(open(local_filepath, 'rb').read()).hexdigest()
+        if remote_filehash and remote_filehash == local_filehash:
             print("File is already up to date. No need to download.")
-        else:
-            download_file(url, local_filename)
-            shipping_costs = parse_file(local_filename)
-            save(shipping_costs, remote_file_date)
-    else:
-        download_file(url, local_filename)
-        shipping_costs = parse_file(local_filename)
-        save(shipping_costs, remote_file_date)
+            return 0
+        
+    download_file(url, local_filepath)
+    shipping_costs = parse_file(local_filepath)
+    save(shipping_costs, remote_filedate)
 
 if __name__ == '__main__':
     main()
