@@ -76,6 +76,7 @@ def save(shipping_costs, filedate):
             if column_name not in shipping_costs_dict:
                 shipping_costs_dict[column_name] = {}
             shipping_costs_dict[column_name][row[0]] = row[i + 1]  # Add 1 to skip the primary key 'desi'
+    shipping_costs_dict['last_changed'] = filedate
     with open('data/shipping_costs.json', 'w') as json_file:
         json.dump(shipping_costs_dict, json_file, indent=4)
 
