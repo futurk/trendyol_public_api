@@ -67,18 +67,17 @@ def save(shipping_costs, filedate):
     conn.commit()
 
     # db to json
-    cursor.execute('SELECT * FROM shipping_costs')
-    rows = cursor.fetchall()
-    columns = [description[0] for description in cursor.description]
-    response_data = {}
-    for idx, row in enumerate(rows):
-        row_data = {}
-        for col_idx, col_name in enumerate(columns):
-            row_data[col_name] = row[col_idx]
-        response_data[str(idx)] = row_data
-    response_data['last_changed'] = filedate
-    with open("data/shipping_costs.json", "w") as outfile:
-        json.dump(response_data, outfile)
+    cursor.execute("SELECT * FROM shipping_costs")
+    data = cursor.fetchall()
+    columns = [description[0] for description in cursor.description[1:]]
+    shipping_costs_dict = {}
+    for row in data:
+        for i, column_name in enumerate(columns):
+            if column_name not in shipping_costs_dict:
+                shipping_costs_dict[column_name] = {}
+            shipping_costs_dict[column_name][row[0]] = row[i + 1]  # Add 1 to skip the primary key 'desi'
+    with open('data/shipping_costs.json', 'w') as json_file:
+        json.dump(shipping_costs_dict, json_file, indent=4)
 
     conn.close()
 
