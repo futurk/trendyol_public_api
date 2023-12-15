@@ -34,7 +34,7 @@ def parse_file(filepath: str):
         text += p.extract_text()
     #print(text)
     matches = re.findall(r'\d+,\d{2}', text) # "d+,dd" formatına uyanları bul 
-    grouped_matches = [matches[i:i + 11] for i in range(0, len(matches), 11)] # 11'li gruplara ayır
+    grouped_matches = [matches[i:i + 10] for i in range(0, len(matches), 10)] # 11'li gruplara ayır
     grouped_matches = grouped_matches[:101] # çünkü pdf'te 101. satır itibariyle boş hücreler kendini gösteriyor
     for i in range(len(grouped_matches)):
         # regex, ilk elemanda kusurlu sonuç doğurdu. desiyi ayırmak gerekli.
@@ -56,14 +56,13 @@ def save(shipping_costs: list, filedate):
             sendeo REAL,
             surat REAL,
             tex REAL,
-            ups REAL,
             yurtici REAL,
             borusan REAL,
             ceva REAL,
             horoz REAL
         )
     ''')
-    cursor.executemany('INSERT INTO shipping_costs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', shipping_costs)
+    cursor.executemany('INSERT INTO shipping_costs VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', shipping_costs)
     conn.commit()
 
     # db to json
