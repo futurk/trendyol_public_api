@@ -3,7 +3,7 @@
 ## API Reference
 
 ### Shipping Costs (shipping_costs.json)
-- <https://frknltrk.github.io/trendyol_public_api/data/shipping_costs.json>
+- <https://futurk.github.io/trendyol_public_api/data/shipping_costs.json>
 
 ## Development
 
